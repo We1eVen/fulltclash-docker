@@ -1,7 +1,13 @@
 admin:
-- $ADMIN
+- adminid
+
 bot:
-  api_id: $APIID
-  api_hash: $APIHASH
-  bot_token: $TOKEN
-  proxy: $IP:$PORT
+  api_id: apiid
+  api_hash: apihash
+  bot_token: bottoken
+
+clash:
+  core: cpucore
+  auto-start: true
+
+speedthread: sthread

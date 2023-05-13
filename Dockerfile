@@ -1,17 +1,23 @@
 FROM alpine as git
 WORKDIR /app
-RUN apk add --no-cache git wget && \
-         git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && \
-         wget https://raw.githubusercontent.com/We1eVen/fulltclash-docker/master/config.yaml -O resources/config.yaml
+RUN apk add --no-cache git && \
+         git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git .
 
-FROM alpine
+FROM ubuntu
 LABEL Auther="AirportR" \
       Source="https://github.com/AirportR/FullTclash" \
       Builder="We1eVen"
 WORKDIR /app
 COPY --from=git /app .
-RUN apk add --no-cache python3 py3-pip && \
-         cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
-         echo Asia/Shanghai > /etc/timezone && \
-         pip install -r requirements.txt
-ENTRYPOINT ["sh", "-c", "python3 main.py"]
+COPY config.yaml resources/
+COPY main.sh .
+ENV TZ=Asia/Shanghai
+ENV CORE=1
+ENV THREAD=4
+ENV PROXY=0
+RUN apt update && apt install -y --no-install-recommends python3 python3-pip git && \
+         ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && apt install tzdata && \
+         apt autoclean && rm -rf /var/lib/apt/lists/* && \
+         pip install -r requirements.txt && pip install cryptography && \
+         chmod -R +x .
+ENTRYPOINT ["./main.sh"]
