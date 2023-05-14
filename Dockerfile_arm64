@@ -1,0 +1,27 @@
+FROM ubuntu as build
+WORKDIR /build
+RUN apt update && apt install -y git golang && \
+    git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && \
+    cd libs && rm fulltclash.so fulltclash.dll && go mod init fulltclash && go mod tidy && GOOS=linux GOARCH=arm64 GOARM=7 CGO_ENABLED=1 CC=aarch64-linux-gnu-gcc CXX=aarch64-linux-gnu-g++ AR=aarch64-linux-gnu-ar go build -buildmode=c-shared -o fulltclash.so fulltclash.go
+
+FROM ubuntu
+LABEL Auther="AirportR" \
+      Source="https://github.com/AirportR/FullTclash" \
+      Builder="We1eVen"
+WORKDIR /app
+COPY --from=build /build .
+COPY config.yaml resources/
+COPY main.sh .
+ENV TZ=Asia/Shanghai
+ENV CORE=1
+ENV THREAD=4
+ENV PROXY=0
+RUN apt update && apt install -y --no-install-recommends python3 python3-pip python3-dev gcc && \
+    ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && apt install tzdata && \
+    apt autoclean && rm -rf /var/lib/apt/lists/* && \
+ #   git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && \
+#    mv -f fulltclash.so libs/fulltclash.so && \
+#         git clone --depth=1 https://github.com/pyrogram/tgcrypto && cd tgcrypto && pip3 install -U tgcrypto && cd .. \
+    pip install -r requirements.txt && pip install cryptography && \
+    chmod -R +x .
+ENTRYPOINT ["./main.sh"]
