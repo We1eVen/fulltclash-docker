@@ -1,4 +1,4 @@
-FROM ubuntu
+FROM python:3.9-slim
 LABEL Source="https://github.com/AirportR/FullTclash" \
       Builder="We1eVen"
 WORKDIR /app
@@ -6,12 +6,12 @@ ENV TZ=Asia/Shanghai
 ENV CORE=1
 ENV THREAD=4
 ENV PROXY=0
-RUN apt update && apt install -y --no-install-recommends python3 python3-pip git && \
-    ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && apt install tzdata && \
+RUN apt update && apt install -y --no-install-recommends git && \
+    ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt clean && rm -rf /var/lib/apt/lists/*
-RUN git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && \
+RUN git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && rm -rf .git bin/*.exe && \
     pip install -r requirements.txt
-COPY config.yaml resources/
+COPY config.yaml resources
 COPY main.sh .
 RUN  chmod -R +x .
 ENTRYPOINT ["./main.sh"]
