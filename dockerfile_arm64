@@ -12,7 +12,7 @@ ENV TZ=Asia/Shanghai
 ENV CORE=1
 ENV THREAD=4
 ENV PROXY=0
-RUN apt update && apt install -y --no-install-recommends git gcc libc6-dev avr-libc && \
+RUN apt update && apt install -y --no-install-recommends git gcc && \
     ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt clean && rm -rf /var/lib/apt/lists/*
 RUN git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && rm -rf .git bin/* && \
