@@ -16,8 +16,7 @@ RUN apt update && apt install -y --no-install-recommends git gcc libc6-dev avr-l
     ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt clean && rm -rf /var/lib/apt/lists/*
 RUN git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && rm -rf .git bin/* && \
-    pip install -r requirements.txt
-RUN pip cache purge
+    pip install --no-cache-dir -r requirements.txt
 COPY config_arm64.yaml resources/config.yaml
 COPY main.sh .
 COPY --from=builder /build/fulltclash bin/fulltclash-linux-arm64
