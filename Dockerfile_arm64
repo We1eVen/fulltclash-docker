@@ -2,7 +2,7 @@ FROM ubuntu as builder
 WORKDIR /build
 RUN apt update && apt install -y git golang && \
     git clone --depth=1 https://github.com/AirportR/FullTCore.git . && \
-    go build -ldflags="-s -w" fulltclash.go
+    go build -ldflags="-s -w" fulltclash.go && gzexe fulltclash
 
 FROM python:3.9-slim
 LABEL Source="https://github.com/AirportR/FullTclash" \
@@ -17,6 +17,7 @@ RUN apt update && apt install -y --no-install-recommends git gcc libc6-dev avr-l
     apt clean && rm -rf /var/lib/apt/lists/*
 RUN git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && rm -rf .git bin/* && \
     pip install -r requirements.txt
+RUN pip cache purge
 COPY config_arm64.yaml resources/config.yaml
 COPY main.sh .
 COPY --from=builder /build/fulltclash bin/fulltclash-linux-arm64
