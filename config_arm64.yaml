@@ -1,0 +1,14 @@
+admin:
+- adminid
+
+bot:
+  api_id: apiid
+  api_hash: apihash
+  bot_token: bottoken
+
+clash:
+  path: ./bin/fulltclash-linux-arm64
+  core: cpucore
+  auto-start: true
+
+speedthread: sthread
