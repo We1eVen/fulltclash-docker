@@ -9,7 +9,7 @@ ENV PROXY=0
 RUN apt update && apt install -y --no-install-recommends git && \
     ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt clean && rm -rf /var/lib/apt/lists/*
-RUN git clone -b master --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && rm -rf .git bin/*.exe && \
+RUN git clone -b dev --single-branch  --depth=1 https://github.com/AirportR/FullTclash.git . && rm -rf .git bin/*.exe && \
     pip install -r requirements.txt
 COPY config_amd64.yaml resources/config.yaml
 COPY main.sh .
